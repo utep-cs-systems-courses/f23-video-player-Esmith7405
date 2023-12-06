@@ -3,12 +3,15 @@ from ExtractAndDisplay import *
 from myQueue import *
 import sys
 
+debug = None
+if(len(sys.argv) > 2): debug = sys.argv[2]
+
 def extractFrames(vidcap, outputBuffer, maxFramesToLoad=9999):
     # open video file, get frame count
     global frameCount 
     # read first image
     success,image = vidcap.read() 
-    print(f'Reading frame {0} {success}')
+    if debug: print(f'Reading frame {0} {success}')
     for i in range(frameCount):
         # get a jpg encoded frame
         success, jpgImage = cv2.imencode('.jpg', image)
@@ -20,7 +23,7 @@ def extractFrames(vidcap, outputBuffer, maxFramesToLoad=9999):
         # add the frame to the buffer
         outputBuffer.put(image)
         success,image = vidcap.read()
-        print(f'Reading frame {i} {success}')
+        if debug: print(f'Reading frame {i} {success}')
     print('Frame extraction complete')
 
 #take frames from inBuffer, convert to grayscale, put them in outBuffer 
@@ -28,10 +31,10 @@ def convertToGrayScale(inBuffer: myQueue, outBuffer: myQueue):
     inputFrame = inBuffer.get() #consume next frame
     global frameCount
     for i in range(frameCount-1):
-        print(f'Converting frame {i}')
+        if debug: print(f'Converting frame {i}')
         grayscaleFrame = cv2.cvtColor(inputFrame, cv2.COLOR_BGR2GRAY) #convert the image to grayscale
         outBuffer.put(grayscaleFrame) #put grayscale frame in buffer
-        print("inserted")
+        if debug: print("inserted")
         inputFrame = inBuffer.get() # consume next frame
     print('frame conversion complete')
 
@@ -41,7 +44,7 @@ def displayFrames(inputBuffer):
     for i in range(frameCount-1):
         # get the next frame
         frame = inputBuffer.get()
-        print(f'Displaying frame {i}')        
+        if debug: print(f'Displaying frame {i}')        
         # display the image in a window called "video" and wait 42ms
         # before displaying the next frame
         cv2.imshow('Video', frame)
@@ -51,7 +54,7 @@ def displayFrames(inputBuffer):
     # cleanup the windows
     cv2.destroyAllWindows()
 
-# filename of clip to load
+#Get File Name, capture video
 fileName = sys.argv[1]
 vidcap = cv2.VideoCapture(fileName)
 frameCount = int(vidcap.get(cv2.CAP_PROP_FRAME_COUNT))
