@@ -57,6 +57,7 @@ def displayFrames(inputBuffer):
     # cleanup the windows
     cv2.destroyAllWindows()
 
+'''
 # filename of clip to load
 filename = 'clip.mp4'
 
@@ -68,4 +69,4 @@ extractFrames(filename,extractionQueue, 72)
 
 # display the frames
 displayFrames(extractionQueue)
-
+'''
